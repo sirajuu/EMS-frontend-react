@@ -1,8 +1,11 @@
 import React from 'react'
-import { Card, Dropdown, Row, Table } from 'react-bootstrap'
+import { Badge, Card, Dropdown, Row, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import { BASE_URL } from '../../Services/base_url';
 
-function HomeTable() {
+function HomeTable({displayData,deleteUser}) {
+    console.log(displayData);
+
     return (
         <>
             <div className='container mt-5'>
@@ -22,25 +25,24 @@ function HomeTable() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Mark</td>
-                                        <td>@gmail</td>
-                                        <td>Male</td>
+                                    {
+                                        displayData.length>0? displayData.map((item,index)=>(
+<tr>
+                                        <td>{index+1}</td>
+                                        <td>{item.fname} &nbsp; {item.lname}</td>
+                                        <td>{item.email}</td>
+                                        <td>{item.gender}</td>
                                         <td>
                                             <Dropdown>
-                                                <Dropdown.Toggle id="dropdown-basic">
-                                                    Active
+                                                <Dropdown.Toggle  variant={item.status==='Active'?'primary':'danger'}  id="dropdown-basic">
+                                               {item.status}
                                                 </Dropdown.Toggle>
 
-                                                <Dropdown.Menu>
-                                                    <Dropdown.Item >Active</Dropdown.Item>
-                                                    <Dropdown.Item >In Active</Dropdown.Item>
-                                                </Dropdown.Menu>
+                                               
                                             </Dropdown>
                                         </td>
                                         <td>
-                                            <img height={'40px'} width={'50px'} src="https://www.freeiconspng.com/uploads/blue-user-icon-32.jpg" alt="Profile" />
+                                            <img height={'40px'} width={'50px'} src={`${BASE_URL}/uploads/${item.profile}`} alt="Profile" />
                                         </td>
                                         <td>
                                             <Dropdown>
@@ -50,20 +52,20 @@ function HomeTable() {
 
                                                 <Dropdown.Menu>
                                                     <Dropdown.Item >
-                                                        <Link to={'/Profile/:id'} className='text-decoration-none' >
+                                                        <Link to={`/profile/${item._id}`} className='text-decoration-none' >
                                                             <i className='fa-solid fa-eye text-success me-2'></i>
                                                             <span className=' text-dark'>View</span>
                                                         </Link>
 
                                                     </Dropdown.Item>
                                                     <Dropdown.Item >
-                                                        <Link to={'/Edit/:id'} className='text-decoration-none'>
+                                                        <Link to={`/Edit/${item._id}`} className='text-decoration-none'>
                                                             <i className='fa-solid fa-pen text-danger me-2'></i>
                                                             <span>Edit</span>
                                                         </Link>
                                                     </Dropdown.Item>
                                                     <Dropdown.Item >
-                                                        <div>
+                                                        <div onClick={()=>deleteUser(item._id)}>
                                                             <i className='fa-solid fa-trash text-danger me-2 '></i>
                                                             <span className=' text-dark'>Delete</span>
                                                         </div>
@@ -72,6 +74,10 @@ function HomeTable() {
                                             </Dropdown>
                                         </td>
                                     </tr>
+                                        ))
+                                    :
+                                    <tr className='d-flex justify-content-center mt-5 w-100 align-items-center text-danger'>Sorry!! Nothing to display</tr>
+                                     }
                                 </tbody>
                             </Table>
 
